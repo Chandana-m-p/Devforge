@@ -1,11 +1,10 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Terminal, Shield, Cpu, Play, LogOut, User, Sparkles, Layers } from 'lucide-react';
+import { Cpu, LogOut, Sparkles, Layers } from 'lucide-react';
 
 export const Navbar = () => {
   const { user, isAuthenticated, logout, isDemoMode, toggleDemoMode } = useAuth();
-  const navigate = useNavigate();
 
   return (
     <header className="h-16 bg-dark-800 border-b border-gray-800 px-6 flex items-center justify-between sticky top-0 z-40">
@@ -58,9 +57,9 @@ export const Navbar = () => {
               </div>
             </div>
             <button
-              onClick={() => { logout(); navigate('/'); }}
+              onClick={logout}
               className="p-2 text-gray-400 hover:text-rose-400 transition"
-              title="Logout"
+              title="Sign Out"
             >
               <LogOut className="w-4 h-4" />
             </button>

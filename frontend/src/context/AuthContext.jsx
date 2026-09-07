@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState } from 'react';
+import { LogoutModal } from '../components/LogoutModal';
 
 const AuthContext = createContext();
 
@@ -10,6 +11,7 @@ export const AuthProvider = ({ children }) => {
 
   const [token, setToken] = useState(() => localStorage.getItem('devforge_token') || 'demo-jwt-token-xyz');
   const [isDemoMode, setIsDemoMode] = useState(true);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
   const login = (email, password) => {
     const userData = { id: 1, name: email.split('@')[0] || "Developer", email, role: "ROLE_USER" };
@@ -31,11 +33,20 @@ export const AuthProvider = ({ children }) => {
     return true;
   };
 
-  const logout = () => {
+  const requestLogout = () => {
+    setIsLogoutModalOpen(true);
+  };
+
+  const confirmLogout = () => {
     setUser(null);
     setToken(null);
     localStorage.removeItem('devforge_user');
     localStorage.removeItem('devforge_token');
+    setIsLogoutModalOpen(false);
+  };
+
+  const cancelLogout = () => {
+    setIsLogoutModalOpen(false);
   };
 
   const toggleDemoMode = () => {
@@ -43,8 +54,25 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, isAuthenticated: !!user, login, register, logout, isDemoMode, toggleDemoMode }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      token, 
+      isAuthenticated: !!user, 
+      login, 
+      register, 
+      requestLogout,
+      logout: requestLogout,
+      confirmLogout, 
+      cancelLogout,
+      isDemoMode, 
+      toggleDemoMode 
+    }}>
       {children}
+      <LogoutModal
+        isOpen={isLogoutModalOpen}
+        onClose={cancelLogout}
+        onConfirm={confirmLogout}
+      />
     </AuthContext.Provider>
   );
 };
