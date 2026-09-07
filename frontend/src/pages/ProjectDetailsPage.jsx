@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { projectApi } from '../services/api';
+import { usePipelineWebSocket } from '../hooks/usePipelineWebSocket';
 import { Navbar } from '../components/Navbar';
 import { Sidebar } from '../components/Sidebar';
 import { StatusBadge, MetricCard } from '../components/MetricCard';
@@ -39,6 +40,8 @@ export const ProjectDetailsPage = () => {
   const [aiResponse, setAiResponse] = useState(null);
   const [copiedCode, setCopiedCode] = useState(false);
 
+  const { streamLogs, isStreaming, simulateLivePipelineStream } = usePipelineWebSocket(pipelineRun?.id);
+
   useEffect(() => {
     const loadProjectDetails = async () => {
       const projRes = await projectApi.getById(id, isDemoMode);
@@ -54,9 +57,17 @@ export const ProjectDetailsPage = () => {
 
   const handleTriggerPipeline = async () => {
     setRunningPipeline(true);
+    setActiveTab('Logs');
     const res = await projectApi.triggerPipeline(id, isDemoMode);
     setPipelineRun(res.data);
-    setRunningPipeline(false);
+
+    if (res.data && res.data.stages) {
+      simulateLivePipelineStream(res.data.stages, null, () => {
+        setRunningPipeline(false);
+      });
+    } else {
+      setRunningPipeline(false);
+    }
   };
 
   const handleAskAI = async (logToExplain) => {
@@ -426,7 +437,11 @@ jobs:
 
           {/* TAB 10: LOGS */}
           {activeTab === 'Logs' && (
-            <LogViewer logs={pipelineRun?.stages?.map(s => `[${s.stageName}] ${s.logs}`).join('\n\n') || "No logs available."} title="Centralized Pipeline Console Logs" />
+            <LogViewer 
+              logs={isStreaming && streamLogs.length > 0 ? streamLogs.join('\n') : (pipelineRun?.stages?.map(s => `[${s.stageName}] ${s.logs}`).join('\n\n') || "No logs available.")} 
+              title="Centralized Pipeline Telemetry Console"
+              isStreaming={isStreaming}
+            />
           )}
 
           {/* TAB 11: HEALTH */}

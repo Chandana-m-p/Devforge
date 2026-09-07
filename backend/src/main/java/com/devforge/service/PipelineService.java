@@ -37,6 +37,9 @@ public class PipelineService {
     @Autowired
     private HealthScoreService healthScoreService;
 
+    @Autowired
+    private TelemetryStreamService telemetryStreamService;
+
     public PipelineRunDTO executePipeline(Long projectId, String triggerReason) {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new RuntimeException("Project not found: " + projectId));
@@ -113,6 +116,16 @@ public class PipelineService {
         stage.setCompletedAt(LocalDateTime.now());
         stage.setDurationMs(450L + (long)(Math.random() * 800));
         stage.setLogs(logs);
+
+        // Stream real-time telemetry line-by-line via WebSocket
+        if (logs != null) {
+            for (String line : logs.split("\n")) {
+                if (!line.trim().isEmpty()) {
+                    telemetryStreamService.streamLog(runId, stageName, line, status);
+                }
+            }
+        }
+
         return pipelineStageRepository.save(stage);
     }
 

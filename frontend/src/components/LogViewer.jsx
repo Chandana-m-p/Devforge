@@ -1,9 +1,16 @@
-import React, { useState } from 'react';
-import { Copy, Download, Search, Check, Terminal } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Copy, Download, Search, Check, Terminal, Radio } from 'lucide-react';
 
-export const LogViewer = ({ logs, title = "Pipeline Stage Execution Log" }) => {
+export const LogViewer = ({ logs, title = "Pipeline Stage Execution Log", isStreaming = false }) => {
   const [copied, setCopied] = useState(false);
   const [filter, setFilter] = useState('');
+  const logEndRef = useRef(null);
+
+  useEffect(() => {
+    if (isStreaming && logEndRef.current) {
+      logEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [logs, isStreaming]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(logs || '');
@@ -26,11 +33,17 @@ export const LogViewer = ({ logs, title = "Pipeline Stage Execution Log" }) => {
     : 'No logs recorded.';
 
   return (
-    <div className="rounded-xl border border-gray-800 bg-dark-900 overflow-hidden font-mono text-xs">
+    <div className="rounded-xl border border-gray-800 bg-dark-900 overflow-hidden font-mono text-xs shadow-2xl">
       <div className="bg-dark-800 px-4 py-3 border-b border-gray-800 flex items-center justify-between">
-        <div className="flex items-center gap-2 text-gray-300 font-semibold">
+        <div className="flex items-center gap-2.5 text-gray-300 font-semibold">
           <Terminal className="w-4 h-4 text-brand-400" />
           <span>{title}</span>
+          {isStreaming && (
+            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[10px] font-bold animate-pulse">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+              LIVE TELEMETRY STREAMING
+            </span>
+          )}
         </div>
         <div className="flex items-center gap-2">
           <div className="relative">
@@ -61,6 +74,7 @@ export const LogViewer = ({ logs, title = "Pipeline Stage Execution Log" }) => {
       </div>
       <div className="p-4 bg-slate-950 text-slate-200 overflow-x-auto max-h-96 text-[12px] leading-relaxed whitespace-pre-wrap selection:bg-brand-600 selection:text-white">
         {filteredLogs}
+        <div ref={logEndRef} />
       </div>
     </div>
   );
