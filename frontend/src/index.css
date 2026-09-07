@@ -4,7 +4,7 @@
 
 @layer base {
   body {
-    @apply bg-dark-900 text-gray-100 antialiased selection:bg-brand-600 selection:text-white;
+    @apply bg-dark-900 text-gray-100 antialiased selection:bg-brand-600 selection:text-white font-sans;
   }
 }
 
@@ -14,23 +14,48 @@
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #0F172A;
+  background: #0B0F19;
 }
 ::-webkit-scrollbar-thumb {
-  background: #334155;
+  background: #1F2937;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+  background: #374151;
 }
 
-/* Glassmorphism effects */
+/* Ambient Radial Glow Effect */
+.ambient-glow {
+  background: radial-gradient(circle at 50% 20%, rgba(99, 102, 241, 0.12) 0%, rgba(6, 182, 212, 0.05) 35%, rgba(11, 15, 25, 0) 70%);
+}
+
+.ambient-glow-emerald {
+  background: radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.12) 0%, rgba(11, 15, 25, 0) 65%);
+}
+
+/* Glassmorphism Panels */
 .glass-panel {
   background: rgba(17, 24, 39, 0.75);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+.glass-panel-hover {
+  @apply transition-all duration-300 hover:border-brand-500/40 hover:-translate-y-1 hover:shadow-xl hover:shadow-brand-500/10;
+}
+
+/* Terminal & Monospace Styling */
 .terminal-scroll {
   font-family: 'JetBrains Mono', monospace;
+}
+
+/* Keyframe Animations */
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.05); }
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 3s ease-in-out infinite;
 }
