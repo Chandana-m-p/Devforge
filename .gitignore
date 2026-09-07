@@ -1,0 +1,25 @@
+# Dependencies & Build Outputs
+node_modules/
+frontend/node_modules/
+frontend/dist/
+backend/target/
+*.jar
+*.war
+*.ear
+
+# Logs & Environment
+*.log
+.env
+.env.local
+
+# IDE & OS Files
+.idea/
+.vscode/
+*.swp
+*.DS_Store
+Thumbs.db
+
+# Python bytecode
+__pycache__/
+*.pyc
+*.pyo

@@ -1,0 +1,35 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: devforge-backend
+  datasource:
+    url: ${DATABASE_URL:jdbc:h2:mem:devforgedb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE}
+    driver-class-name: ${DATABASE_DRIVER:org.h2.Driver}
+    username: ${DATABASE_USERNAME:sa}
+    password: ${DATABASE_PASSWORD:}
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        web-allow-others: true
+  jpa:
+    database-platform: ${JPA_DIALECT:org.hibernate.dialect.H2Dialect}
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+
+app:
+  jwt:
+    secret: 926D96C90030DD58429D2751AC16E746B2B361544D507A42A097F29009B8E65D
+    expiration-ms: 86400000 # 24 hours
+  ai:
+    service-url: ${AI_SERVICE_URL:http://localhost:8000}
+    enabled: true
