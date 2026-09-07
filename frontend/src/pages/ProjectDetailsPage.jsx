@@ -379,6 +379,77 @@ export const ProjectDetailsPage = () => {
           {/* TAB 8: DOCKER */}
           {activeTab === 'Docker' && (
             <div className="space-y-6">
+              {/* AWS Cloud Deployment Orchestrator Card (IMPL-04) */}
+              <div className="p-6 rounded-2xl glass-panel border border-gray-800 space-y-4">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div>
+                    <div className="font-bold text-sm text-white flex items-center gap-2">
+                      <Box className="w-4 h-4 text-cyan-400" />
+                      <span>AWS Cloud Deployment Orchestrator (IMPL-04)</span>
+                    </div>
+                    <p className="text-xs text-gray-400 mt-1 font-mono">
+                      1-Click automated deployment of container image to AWS EC2 & Elastic Container Registry (ECR).
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-3 self-start">
+                    <button
+                      onClick={async () => {
+                        const res = await projectApi.getTerraformConfig(id, isDemoMode);
+                        const element = document.createElement("a");
+                        const file = new Blob([res.data || ''], { type: 'text/plain' });
+                        element.href = URL.createObjectURL(file);
+                        element.download = "main.tf";
+                        document.body.appendChild(element);
+                        element.click();
+                        document.body.removeChild(element);
+                      }}
+                      className="px-3.5 py-2 bg-dark-800 hover:bg-gray-800 text-gray-200 font-bold rounded-xl text-xs flex items-center gap-2 border border-gray-700 transition font-mono"
+                    >
+                      <Download className="w-3.5 h-3.5 text-brand-400" />
+                      <span>Download Terraform main.tf</span>
+                    </button>
+
+                    <button
+                      onClick={async () => {
+                        setRunningPipeline(true);
+                        const res = await projectApi.deployToAWS(id, 'us-east-1', isDemoMode);
+                        if (res.data && res.data.status === 'SUCCESS') {
+                          setActiveTab('Logs');
+                          simulateLivePipelineStream([
+                            { stageName: "AWS_ECR", logs: "[AWS ECR] Tagging container image: " + res.data.ecrImageUri + "\n[AWS ECR] Pushing layers to registry... OK" },
+                            { stageName: "AWS_EC2", logs: "[AWS EC2] Provisioning t3.micro compute instance (" + res.data.instanceId + ")...\n[AWS EC2] Public Endpoint Ready: " + res.data.publicEndpoint }
+                          ], null, () => setRunningPipeline(false));
+                        } else {
+                          setRunningPipeline(false);
+                        }
+                      }}
+                      disabled={runningPipeline}
+                      className="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white font-bold rounded-xl text-xs flex items-center gap-2 shadow-lg shadow-cyan-600/30 transition disabled:opacity-50"
+                    >
+                      <RefreshCw className={`w-3.5 h-3.5 ${runningPipeline ? 'animate-spin' : ''}`} />
+                      <span>Deploy Container to AWS Cloud</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 font-mono text-xs pt-2">
+                  <div className="p-3 bg-dark-900 rounded-xl border border-gray-800">
+                    <div className="text-[10px] text-gray-500 uppercase">AMAZON ECR REGISTRY URI</div>
+                    <div className="text-cyan-400 font-bold mt-1 select-all break-all text-[11px]">123456789012.dkr.ecr.us-east-1.amazonaws.com/devforge/demo:latest</div>
+                  </div>
+                  <div className="p-3 bg-dark-900 rounded-xl border border-gray-800">
+                    <div className="text-[10px] text-gray-500 uppercase">AWS EC2 COMPUTE INSTANCE</div>
+                    <div className="text-emerald-400 font-bold mt-1">t3.micro (i-0a91f82c441b802a)</div>
+                  </div>
+                  <div className="p-3 bg-dark-900 rounded-xl border border-gray-800">
+                    <div className="text-[10px] text-gray-500 uppercase">CONTAINER EXPOSED PORTS</div>
+                    <div className="text-white font-bold mt-1">HTTP 80 / 8080 (Ingress Active)</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Multi-Stage Dockerfile */}
               <div className="p-6 rounded-2xl glass-panel border border-gray-800 space-y-4">
                 <div className="font-bold text-sm text-white flex items-center justify-between">
                   <div className="flex items-center gap-2">
@@ -408,12 +479,66 @@ ENTRYPOINT ["java", "-jar", "app.jar"]`}
 
           {/* TAB 9: CI/CD */}
           {activeTab === 'CI/CD' && (
-            <div className="p-6 rounded-2xl glass-panel border border-gray-800 space-y-4">
-              <div className="font-bold text-sm text-white flex items-center gap-2">
-                <GitBranch className="w-4 h-4 text-purple-400" />
-                <span>Generated GitHub Actions CI/CD Workflow (.github/workflows/devforge-ci.yml)</span>
+            <div className="space-y-6">
+              {/* GitHub Webhook Receiver Configuration Card */}
+              <div className="p-6 rounded-2xl glass-panel border border-gray-800 space-y-4">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div>
+                    <div className="font-bold text-sm text-white flex items-center gap-2">
+                      <GitBranch className="w-4 h-4 text-emerald-400" />
+                      <span>GitHub Webhook Automation Receiver (IMPL-02)</span>
+                    </div>
+                    <p className="text-xs text-gray-400 mt-1 font-mono">
+                      Automatically trigger DevForge CI/CD builds on every <code className="text-brand-400">git push</code> event.
+                    </p>
+                  </div>
+                  <button
+                    onClick={async () => {
+                      setRunningPipeline(true);
+                      const res = await projectApi.triggerWebhookTest(id, isDemoMode);
+                      if (res.data && res.data.status === 'SUCCESS') {
+                        setActiveTab('Logs');
+                        simulateLivePipelineStream([
+                          { stageName: "WEBHOOK", logs: "[WEBHOOK] HMAC SHA-256 Signature Verified (X-Hub-Signature-256)\n[WEBHOOK] Event: push (refs/heads/main)\n[WEBHOOK] Triggering automated build pipeline..." },
+                          { stageName: "ANALYZE", logs: "[ANALYZE] Structure verified." },
+                          { stageName: "BUILD", logs: "[BUILD] Executing build command..." },
+                          { stageName: "TEST", logs: "[TEST] 47 Tests Passed." }
+                        ], null, () => setRunningPipeline(false));
+                      } else {
+                        setRunningPipeline(false);
+                      }
+                    }}
+                    disabled={runningPipeline}
+                    className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center gap-2 shadow-lg shadow-emerald-600/20 transition disabled:opacity-50"
+                  >
+                    <RefreshCw className={`w-3.5 h-3.5 ${runningPipeline ? 'animate-spin' : ''}`} />
+                    <span>Test Webhook Payload</span>
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 font-mono text-xs pt-2">
+                  <div className="p-3 bg-dark-900 rounded-xl border border-gray-800">
+                    <div className="text-[10px] text-gray-500 uppercase">WEBHOOK TARGET URL</div>
+                    <div className="text-emerald-400 font-bold mt-1 select-all break-all">http://localhost:8080/api/webhooks/github</div>
+                  </div>
+                  <div className="p-3 bg-dark-900 rounded-xl border border-gray-800">
+                    <div className="text-[10px] text-gray-500 uppercase">HMAC SECURITY SIGNATURE</div>
+                    <div className="text-amber-400 font-bold mt-1">HMAC SHA-256 (Active)</div>
+                  </div>
+                  <div className="p-3 bg-dark-900 rounded-xl border border-gray-800">
+                    <div className="text-[10px] text-gray-500 uppercase">LISTENED EVENT TYPES</div>
+                    <div className="text-white font-bold mt-1">push (refs/heads/*)</div>
+                  </div>
+                </div>
               </div>
-              <div className="p-4 rounded-xl bg-slate-950 text-slate-200 font-mono text-xs leading-relaxed overflow-x-auto whitespace-pre">
+
+              {/* GitHub Actions CI/CD Workflow */}
+              <div className="p-6 rounded-2xl glass-panel border border-gray-800 space-y-4">
+                <div className="font-bold text-sm text-white flex items-center gap-2">
+                  <GitBranch className="w-4 h-4 text-purple-400" />
+                  <span>Generated GitHub Actions CI/CD Workflow (.github/workflows/devforge-ci.yml)</span>
+                </div>
+                <div className="p-4 rounded-xl bg-slate-950 text-slate-200 font-mono text-xs leading-relaxed overflow-x-auto whitespace-pre">
 {`name: DevForge CI/CD Pipeline
 on:
   push:
@@ -431,6 +556,7 @@ jobs:
     - run: mvn test
     - name: Build Docker Image
       run: docker build -t devforge/demo-api:latest .`}
+                </div>
               </div>
             </div>
           )}

@@ -48,6 +48,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/h2-console/**").permitAll()
                 .requestMatchers("/api/public/**").permitAll()
+                .requestMatchers("/api/webhooks/**").permitAll()
                 .requestMatchers("/ws/**").permitAll()
                 .anyRequest().permitAll() // Demo Mode allows seamless access
             );
