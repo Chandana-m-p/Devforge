@@ -105,18 +105,6 @@ export const LandingPage = () => {
               <span>View Interactive Demo</span>
             </Link>
           </div>
-
-          {/* Hero Visual Showcase Frame */}
-          <div className="p-2 md:p-3 rounded-2xl glass-panel-glow shadow-2xl max-w-5xl mx-auto relative overflow-hidden animate-float">
-            <div className="bg-dark-900 rounded-xl overflow-hidden border border-gray-800 relative">
-              <img
-                src="/hero_illustration.jpg"
-                alt="DevForge Infrastructure Platform Showcase"
-                className="w-full h-auto object-cover rounded-xl"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-dark-900/60 via-transparent to-transparent" />
-            </div>
-          </div>
         </div>
       </section>
 
