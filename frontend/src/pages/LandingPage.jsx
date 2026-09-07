@@ -19,7 +19,9 @@ import {
   Activity,
   Check,
   Star,
-  Lock
+  Lock,
+  Flame,
+  CheckSquare
 } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 
@@ -28,20 +30,20 @@ export const LandingPage = () => {
     <div className="min-h-screen bg-dark-900 text-gray-100 flex flex-col font-sans selection:bg-brand-600 selection:text-white">
       <Navbar />
 
-      {/* Hero Section with Ambient Lighting */}
-      <section className="relative overflow-hidden pt-24 pb-28 border-b border-gray-800/80 ambient-glow">
+      {/* Hero Section with Ambient Lighting Mesh */}
+      <section className="relative overflow-hidden pt-20 pb-28 border-b border-gray-800/80 hero-glow-mesh">
         <div className="max-w-6xl mx-auto px-6 text-center relative z-10">
           
           {/* Badge Tagline */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-600/10 border border-brand-500/30 text-brand-400 text-xs font-mono font-medium mb-8 shadow-sm">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-600/15 border border-brand-500/30 text-brand-300 text-xs font-mono font-bold mb-8 shadow-lg shadow-brand-500/10">
             <Sparkles className="w-3.5 h-3.5 text-brand-400 animate-pulse" />
-            <span>Integrated Developer Infrastructure Platform</span>
+            <span>Unified Developer Infrastructure Platform</span>
           </div>
 
           {/* Main Title */}
-          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-white mb-6 leading-tight">
+          <h1 className="text-5xl md:text-7xl font-black tracking-tight text-white mb-6 leading-tight">
             DevForge <br />
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-brand-400 via-cyan-400 to-emerald-400">
+            <span className="text-gradient-primary">
               Forge. Build. Ship.
             </span>
           </h1>
@@ -51,26 +53,64 @@ export const LandingPage = () => {
             One unified orchestration layer for building, testing, securing and containerizing your software projects. Stop fighting tool fragmentation — connect your repository and ship with confidence.
           </p>
 
+          {/* Feature Badges Grid */}
+          <div className="flex flex-wrap items-center justify-center gap-3 mb-10 text-xs font-mono">
+            <span className="px-3.5 py-1.5 rounded-xl bg-dark-800/80 border border-gray-800 text-indigo-400 flex items-center gap-1.5 shadow-sm">
+              ✦ AI Diagnostic Engine
+            </span>
+            <span className="px-3.5 py-1.5 rounded-xl bg-dark-800/80 border border-gray-800 text-cyan-400 flex items-center gap-1.5 shadow-sm">
+              ⚡ 10x Automated Pipelines
+            </span>
+            <span className="px-3.5 py-1.5 rounded-xl bg-dark-800/80 border border-gray-800 text-emerald-400 flex items-center gap-1.5 shadow-sm">
+              🛡️ OWASP Level-3 Audited
+            </span>
+          </div>
+
           {/* CTA Group */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
             <Link
               to="/register"
-              className="w-full sm:w-auto px-8 py-3.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-brand-600/30 transition-all hover:-translate-y-0.5"
+              className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white rounded-xl font-extrabold text-xs flex items-center justify-center gap-2 shadow-xl shadow-indigo-600/30 transition-all duration-300 hover:-translate-y-0.5"
             >
               <span>Get Started Free</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
               to="/dashboard"
-              className="w-full sm:w-auto px-8 py-3.5 bg-dark-800 hover:bg-dark-700 text-gray-200 border border-gray-700 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition hover:-translate-y-0.5"
+              className="w-full sm:w-auto px-8 py-3.5 bg-dark-800/90 hover:bg-dark-700 text-gray-200 border border-gray-700 rounded-xl font-extrabold text-xs flex items-center justify-center gap-2 transition-all duration-300 hover:-translate-y-0.5"
             >
               <Terminal className="w-4 h-4 text-cyan-400" />
               <span>View Interactive Demo</span>
             </Link>
           </div>
 
-          {/* Visual Pipeline Showcase */}
-          <div className="p-6 rounded-2xl glass-panel border border-gray-800/80 shadow-2xl max-w-5xl mx-auto relative overflow-hidden">
+          {/* Hero Visual Showcase Frame */}
+          <div className="p-2 md:p-3 rounded-2xl glass-panel-glow shadow-2xl max-w-5xl mx-auto relative overflow-hidden animate-float">
+            <div className="bg-dark-900 rounded-xl overflow-hidden border border-gray-800 relative">
+              <img
+                src="/hero_illustration.jpg"
+                alt="DevForge Infrastructure Platform Showcase"
+                className="w-full h-auto object-cover rounded-xl"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-dark-900/60 via-transparent to-transparent" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Visual Pipeline Showcase Flow */}
+      <section className="py-20 bg-dark-900 border-b border-gray-800/80 relative">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center max-w-2xl mx-auto mb-12 space-y-2">
+            <h2 className="text-2xl md:text-3xl font-extrabold text-white">
+              End-to-End Automated Pipeline Flow
+            </h2>
+            <p className="text-xs text-gray-400 font-mono">
+              From code push to container deployment in one continuous execution loop
+            </p>
+          </div>
+
+          <div className="p-6 rounded-2xl glass-panel border border-gray-800/80 shadow-2xl max-w-5xl mx-auto">
             <div className="flex items-center justify-between border-b border-gray-800/80 pb-4 mb-6 text-xs font-mono">
               <div className="flex items-center gap-2 text-gray-400">
                 <div className="w-3 h-3 rounded-full bg-rose-500/80 inline-block" />
@@ -111,7 +151,7 @@ export const LandingPage = () => {
       </section>
 
       {/* Social Trust Badges */}
-      <section className="py-10 bg-dark-800/50 border-b border-gray-800/80">
+      <section className="py-10 bg-dark-800/40 border-b border-gray-800/80">
         <div className="max-w-6xl mx-auto px-6 flex flex-wrap items-center justify-around gap-6 text-xs text-gray-400 font-mono uppercase tracking-wider">
           <span className="flex items-center gap-2"><Lock className="w-4 h-4 text-emerald-400" /> OWASP Security Rules</span>
           <span className="flex items-center gap-2"><Box className="w-4 h-4 text-cyan-400" /> Multi-Stage Docker</span>
@@ -124,7 +164,7 @@ export const LandingPage = () => {
       <section className="py-24 bg-dark-900 border-b border-gray-800">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
-            <h2 className="text-3xl font-extrabold text-white">
+            <h2 className="text-3xl font-black text-white">
               Developer Tool Fragmentation is Slowing Teams Down
             </h2>
             <p className="text-gray-400 text-xs md:text-sm">
@@ -192,7 +232,7 @@ export const LandingPage = () => {
       <section className="py-20 bg-dark-800/40 border-b border-gray-800">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-16 space-y-2">
-            <h2 className="text-3xl font-extrabold text-white">Designed for Modern Developers & Teams</h2>
+            <h2 className="text-3xl font-black text-white">Designed for Modern Developers & Teams</h2>
             <p className="text-xs text-gray-400">Simple enough for beginners, powerful enough for technical judges and investors.</p>
           </div>
 
@@ -205,7 +245,7 @@ export const LandingPage = () => {
             ].map((u, idx) => {
               const Icon = u.icon;
               return (
-                <div key={idx} className="p-6 rounded-2xl bg-dark-900 border border-gray-800 space-y-3 glass-panel-hover">
+                <div key={idx} className="p-6 rounded-2xl bg-dark-900 border border-gray-800 space-y-3 glass-card-interactive">
                   <Icon className="w-6 h-6 text-brand-400" />
                   <h3 className="text-sm font-bold text-white">{u.title}</h3>
                   <p className="text-xs text-gray-400 leading-relaxed">{u.desc}</p>
